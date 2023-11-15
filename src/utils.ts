@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
 import { defaultTemplate } from "./DefaultTemplate";
-import { OpenAttestationDocument, v2, v3, v4, utils } from "@govtechsg/open-attestation";
+import { OpenAttestationDocument, v2, v3, OAv4,TTv4, utils } from "@tradetrust/open-attestation";
 
 export const repeat = (times: number) => (callback: (index: number) => any) =>
   Array(times)
@@ -29,8 +29,11 @@ export const isV3Document = (document: any): document is v3.OpenAttestationDocum
   return !!document["@context"] && !!document["openAttestationMetadata"];
 };
 
-export const isV4Document = (document: unknown): document is v4.OpenAttestationDocument =>
-  utils.isRawV4Document(document);
+export const isOAV4Document = (document: unknown): document is OAv4.OpenAttestationDocument =>
+  utils.isRawOAV4Document(document);
+
+export const isTTV4Document = (document: unknown): document is TTv4.TradeTrustDocument =>
+  utils.isRawTTV4Document(document);
 
 const getTemplateName = (document: OpenAttestationDocument): string => {
   if (isV2Document(document) && typeof document.$template === "object") {
@@ -39,7 +42,10 @@ const getTemplateName = (document: OpenAttestationDocument): string => {
   if (isV3Document(document) && document.openAttestationMetadata?.template) {
     return document.openAttestationMetadata.template.name;
   }
-  if (isV4Document(document) && document.renderMethod) {
+  if (isOAV4Document(document) && document.renderMethod) {
+    return document.renderMethod.name;
+  }
+  if (isTTV4Document(document) && document.renderMethod) {
     return document.renderMethod.name;
   }
   return "";
@@ -76,7 +82,7 @@ export function documentTemplates(
     .filter((template) => (template.predicate ? template.predicate({ document }) : truePredicate()));
 
   // TODO: OA v4 schema does not support attachments yet
-  const attachments = isV2Document(document) || isV3Document(document) ? document.attachments : ([] as Attachment[]);
+  const attachments = isV2Document(document) || isV3Document(document) || isTTV4Document(document) ? document.attachments : ([] as Attachment[]);
   const tabsRenderedFromAttachments = (attachments || ([] as Attachment[]))
     .map((attachment, index) =>
       isV2Attachment(attachment) // v2 uses attachment.type while v3 uses attachment.mimeType

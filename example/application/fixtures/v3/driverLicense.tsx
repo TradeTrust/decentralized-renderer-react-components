@@ -1,4 +1,4 @@
-import { v3 } from "@govtechsg/open-attestation";
+import { v3 } from "@tradetrust/open-attestation";
 
 export interface DriverLicense extends v3.OpenAttestationDocument {
   name: string;
