@@ -1,5 +1,5 @@
 {
-  "name": "@govtechsg/decentralized-renderer-react-components",
+  "name": "@tradetrust/decentralized-renderer-react-components",
   "version": "0.0.0-development",
   "publishConfig": {
     "access": "public"
@@ -15,7 +15,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
-    "@govtechsg/open-attestation": "6.8.0-alpha.1",
+    "@tradetrust/open-attestation": "6.8.0-alpha.2",
     "crypto-browserify": "^3.12.0",
     "debug": "^4.3.1",
     "penpal": "^5.3.0",
@@ -181,6 +181,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Open-Attestation/decentralized-renderer-react-components.git"
+    "url": "https://github.com/TradeTrust/decentralized-renderer-react-components.git"
   }
 }
