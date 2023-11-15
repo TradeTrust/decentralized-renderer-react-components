@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
 import { defaultTemplate } from "./DefaultTemplate";
-import { OpenAttestationDocument, v2, v3, OAv4,TTv4, utils } from "@tradetrust/open-attestation";
+import { OpenAttestationDocument, v2, v3, OAv4, TTv4, utils } from "@tradetrust/open-attestation";
 
 export const repeat = (times: number) => (callback: (index: number) => any) =>
   Array(times)
@@ -82,7 +82,10 @@ export function documentTemplates(
     .filter((template) => (template.predicate ? template.predicate({ document }) : truePredicate()));
 
   // TODO: OA v4 schema does not support attachments yet
-  const attachments = isV2Document(document) || isV3Document(document) || isTTV4Document(document) ? document.attachments : ([] as Attachment[]);
+  const attachments =
+    isV2Document(document) || isV3Document(document) || isTTV4Document(document)
+      ? document.attachments
+      : ([] as Attachment[]);
   const tabsRenderedFromAttachments = (attachments || ([] as Attachment[]))
     .map((attachment, index) =>
       isV2Attachment(attachment) // v2 uses attachment.type while v3 uses attachment.mimeType
