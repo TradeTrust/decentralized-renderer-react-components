@@ -1,5 +1,5 @@
 import { ComponentType } from "react";
-import { v2, WrappedDocument, OpenAttestationDocument, v3, TTv4 } from "@tradetrust/open-attestation";
+import { v2, WrappedDocument, OpenAttestationDocument, v3, TTv4 } from "@tradetrust-tt/tradetrust";
 
 export type Attachment = v2.Attachment | v3.Attachment | TTv4.Attachment; // TODO: OA v4 schema does not support attachments yet
 export interface Renderer {
