@@ -1,5 +1,5 @@
 {
-  "name": "@tradetrust/decentralized-renderer-react-components",
+  "name": "@tradetrust-tt/decentralized-renderer-react-components",
   "version": "0.0.0-development",
   "publishConfig": {
     "access": "public"
