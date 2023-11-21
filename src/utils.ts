@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
 import { defaultTemplate } from "./DefaultTemplate";
-import { OpenAttestationDocument, v2, v3, OAv4, TTv4, utils } from "@tradetrust/open-attestation";
+import { OpenAttestationDocument, v2, v3, OAv4, TTv4, utils } from "@tradetrust-tt/tradetrust";
 
 export const repeat = (times: number) => (callback: (index: number) => any) =>
   Array(times)
