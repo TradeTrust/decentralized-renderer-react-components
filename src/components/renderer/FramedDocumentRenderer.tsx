@@ -47,7 +47,7 @@ export function FramedDocumentRenderer({
   const templateConfiguration = templates.find((template) => template.id === templateName) || templates[0] || {};
   const Template = templateConfiguration.template;
 
-  const onConnected = useCallback((postMessage) => {
+  const onConnected = useCallback((postMessage: (actions: FrameActions) => void) => {
     toHost.current = postMessage;
   }, []);
 
