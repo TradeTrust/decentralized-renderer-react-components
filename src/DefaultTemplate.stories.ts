@@ -1,6 +1,4 @@
 import { DefaultTemplate } from "./DefaultTemplate";
-import { StoryObj } from "@storybook/react";
-import React from "react";
 
 export default {
   title: "DefaultTemplate",

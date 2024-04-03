@@ -1,6 +1,4 @@
-import React, { Children, useContext, useState } from "react";
-import { DomListener } from "./DomListener";
-import { action } from "@storybook/addon-actions";
+import React, { useState } from "react";
 
 // Component to demonstrate the usage of DomListener in storybook
 const Counter = () => {
