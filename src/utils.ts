@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
 import { defaultTemplate } from "./DefaultTemplate";
-import { OpenAttestationDocument, v2, v3 } from "@tradetrust-tt/tradetrust";
+import { OpenAttestationDocument, v2, v3, OAv4, TTv4, utils } from "@tradetrust-tt/tradetrust";
 
 export const repeat = (times: number) => (callback: (index: number) => any) =>
   Array(times)
@@ -19,20 +19,34 @@ export const inIframe = (): boolean => {
   }
 };
 
+// FIXME: Not sure why custom type guards are used to detect v2 and v3 documents
 export const isV2Document = (document: any): document is v2.OpenAttestationDocument => {
   return !!document.$template;
 };
 
+// FIXME: Not sure why custom type guards are used to detect v2 and v3 documents
 export const isV3Document = (document: any): document is v3.OpenAttestationDocument => {
-  return !!document["@context"];
+  return !!document["@context"] && !!document["openAttestationMetadata"];
 };
+
+export const isOAV4Document = (document: unknown): document is OAv4.OpenAttestationDocument =>
+  utils.isRawOAV4Document(document);
+
+export const isTTV4Document = (document: unknown): document is TTv4.TradeTrustDocument =>
+  utils.isRawTTV4Document(document);
 
 const getTemplateName = (document: OpenAttestationDocument): string => {
   if (isV2Document(document) && typeof document.$template === "object") {
     return document.$template.name;
   }
-  if (isV3Document(document) && document.openAttestationMetadata.template) {
+  if (isV3Document(document) && document.openAttestationMetadata?.template) {
     return document.openAttestationMetadata.template.name;
+  }
+  if (isOAV4Document(document) && document.renderMethod) {
+    return document.renderMethod.name;
+  }
+  if (isTTV4Document(document) && document.renderMethod) {
+    return document.renderMethod.name;
   }
   return "";
 };
@@ -67,9 +81,14 @@ export function documentTemplates(
     })
     .filter((template) => (template.predicate ? template.predicate({ document }) : truePredicate()));
 
-  const tabsRenderedFromAttachments = (document.attachments || ([] as Attachment[]))
+  // TODO: OA v4 schema does not support attachments yet
+  const attachments =
+    isV2Document(document) || isV3Document(document) || isTTV4Document(document)
+      ? document.attachments
+      : ([] as Attachment[]);
+  const tabsRenderedFromAttachments = (attachments || ([] as Attachment[]))
     .map((attachment, index) =>
-      isV2Attachment(attachment)
+      isV2Attachment(attachment) // v2 uses attachment.type while v3 uses attachment.mimeType
         ? {
             id: `attachment-${index}`,
             label: attachment.filename || "Unknown filename",

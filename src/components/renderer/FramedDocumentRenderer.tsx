@@ -7,9 +7,24 @@ import { FrameActions, obfuscateField, updateHeight, updateTemplates } from "../
 import { HostConnector } from "../frame/HostConnector";
 import { DomListener } from "../common/DomListener";
 import { noAttachmentRenderer } from "./NoAttachmentRenderer";
-import { OpenAttestationDocument, WrappedDocument, v2, v3 } from "@tradetrust-tt/tradetrust";
+import { OpenAttestationDocument, WrappedDocument, v2, v3, OAv4, TTv4 } from "@tradetrust-tt/tradetrust";
 
 const { trace } = getLogger("FramedDocumentRenderer");
+
+export function FramedDocumentRenderer<D extends TTv4.TradeTrustDocument = TTv4.TradeTrustDocument>({
+  templateRegistry,
+  attachmentToComponent,
+}: {
+  templateRegistry: TemplateRegistry<D>;
+  attachmentToComponent?: (attachment: Attachment, document: OpenAttestationDocument) => React.FunctionComponent | null;
+}): JSX.Element;
+export function FramedDocumentRenderer<D extends OAv4.OpenAttestationDocument = OAv4.OpenAttestationDocument>({
+  templateRegistry,
+  attachmentToComponent,
+}: {
+  templateRegistry: TemplateRegistry<D>;
+  attachmentToComponent?: (attachment: Attachment, document: OpenAttestationDocument) => React.FunctionComponent | null;
+}): JSX.Element;
 
 export function FramedDocumentRenderer<D extends v3.OpenAttestationDocument = v3.OpenAttestationDocument>({
   templateRegistry,
