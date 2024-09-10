@@ -20,7 +20,7 @@
     "debug": "^4.3.4",
     "penpal": "^6.2.2",
     "penpal-v4": "npm:penpal@^4.1.1",
-    "react-pdf": "^7.7.1",
+    "react-pdf": "^9.1.0",
     "stream-browserify": "^3.0.0",
     "ts-jest": "^29.1.2",
     "typesafe-actions": "^5.1.0",
