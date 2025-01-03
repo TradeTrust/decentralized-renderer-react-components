@@ -3,8 +3,10 @@
 const config = {
   verbose: true,
   coverageDirectory: "coverage",
+  setupFiles: ["<rootDir>/jest.setup.ts"],
   setupFilesAfterEnv: ["<rootDir>/src/jest.setup.ts"],
   testEnvironment: "jsdom",
+  testMatch: ["**/?(*.)test.[jt]s?(x)"],
   transform: {
     "^.+\\.ts?$": [
       "ts-jest",
@@ -22,7 +24,14 @@ const config = {
     "^.+\\.jsx?$": "babel-jest",
     "\\.(d\\.ts|[jt]sx?)$": "ts-jest",
   },
-  transformIgnorePatterns: ["node_modules/(?!(uuid|@tradetrust-tt/tradetrust)/)"],
+  moduleNameMapper: {
+    "node:stream": "<rootDir>/node_modules/stream-browserify",
+    "node:crypto": "<rootDir>/node_modules/crypto-browserify",
+    "node:util": "<rootDir>/node_modules/util",
+    "node:events": "<rootDir>/node_modules/events",
+    "node:process": "<rootDir>/node_modules/process",
+  },
+  transformIgnorePatterns: ["node_modules/?!(@tradetrust-tt).*/"],
 };
 
 module.exports = config;

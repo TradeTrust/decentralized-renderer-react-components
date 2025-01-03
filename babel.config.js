@@ -7,12 +7,7 @@ module.exports = {
     "@babel/preset-flow",
   ],
   plugins: [
-    [
-      "@babel/plugin-transform-runtime",
-      {
-        corejs: 3,
-      },
-      "@babel/plugin-proposal-class-properties",
-    ],
+    "@babel/plugin-transform-class-properties",
+    "@babel/plugin-transform-private-methods",
   ],
 };

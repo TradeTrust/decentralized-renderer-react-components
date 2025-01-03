@@ -1,4 +1,4 @@
-import { OpenAttestationDocument, v2 } from "@tradetrust-tt/tradetrust";
+import { OpenAttestationDocument, v2, v3 } from "@tradetrust-tt/tradetrust";
 import { isWrappedV2Document, isWrappedV3Document, SignedVerifiableCredential, vc } from "@trustvc/trustvc";
 import { FunctionComponent } from "react";
 import { defaultTemplate } from "./DefaultTemplate";
@@ -20,15 +20,23 @@ export const inIframe = (): boolean => {
   }
 };
 
+export const isV2Document = (document: any): document is v2.OpenAttestationDocument => {
+  return !!document.$template;
+};
+
+export const isV3Document = (document: any): document is v3.OpenAttestationDocument => {
+  return !!document["@context"] && !!document["openAttestationMetadata"];
+};
+
 const getTemplateName = (document: OpenAttestationDocument): string => {
-  if (vc.isSignedDocument(document)) {
-    return [document.renderMethod]?.flat()?.[0]?.templateName;
-  }
-  if (isWrappedV2Document(document) && typeof document.$template === "object") {
+  if (isV2Document(document) && typeof document.$template === "object") {
     return document.$template.name;
   }
-  if (isWrappedV3Document(document) && document.openAttestationMetadata.template) {
+  if (isV3Document(document) && document.openAttestationMetadata.template) {
     return document.openAttestationMetadata.template.name;
+  }
+  if (vc.isSignedDocument(document)) {
+    return [document.renderMethod]?.flat()?.[0]?.templateName;
   }
   return "";
 };

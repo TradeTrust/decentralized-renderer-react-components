@@ -1,6 +1,6 @@
 import React from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { DEFAULT_NO_VALUE_MSG, DEFAULT_REDACTED_MSG, RedactableValue } from "./RedactableValue";
-import { screen, render, fireEvent } from "@testing-library/react";
 
 describe("redactablevalue component", () => {
   it("should display value only when editable is set to false", () => {
