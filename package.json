@@ -183,6 +183,9 @@
           "jest/prefer-expect-assertions": "off"
         }
       }
+    ],
+    "ignorePatterns": [
+      "jest.setup.ts"
     ]
   },
   "prettier": {
