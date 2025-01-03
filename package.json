@@ -18,6 +18,7 @@
     "@trustvc/trustvc": "^1.1.2",
     "crypto-browserify": "^3.12.1",
     "debug": "^4.4.0",
+    "os-browserify": "^0.3.0",
     "penpal": "^6.2.2",
     "penpal-v4": "npm:penpal@^4.1.1",
     "react-pdf": "^7.7.1",
