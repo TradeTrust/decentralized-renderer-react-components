@@ -17,5 +17,5 @@
     "declaration": true,
     "isolatedModules": true
   },
-  "include": ["src", "./jest.setup.ts"]
+  "include": ["src"]
 }
