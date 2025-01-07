@@ -75,6 +75,7 @@ export function documentTemplates(
     ? [(document as SignedVerifiableCredential)?.credentialSubject]
         .flat()
         ?.map((s) => s.attachments)
+        ?.filter(Boolean)
         ?.flat()
     : isWrappedV2Document(document) || isWrappedV3Document(document)
       ? document.attachments
