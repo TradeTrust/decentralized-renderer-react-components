@@ -64,7 +64,7 @@ describe("documentTemplates", () => {
       $template: { name: "foo", type: v2.TemplateType.EmbeddedRenderer, url: "url" },
       attachments: [
         { type: "application/pdf", filename: "abc.pdf", data: "data" },
-        { type: "txt", filename: "abc.txt", data: "data" }
+        { type: "txt", filename: "abc.txt", data: "data" },
       ],
     };
     const templateRegistry: TemplateRegistry<any> = {
@@ -101,56 +101,54 @@ describe("documentTemplates", () => {
         "https://trustvc.io/context/transferable-records-context.json",
         "https://trustvc.io/context/render-method-context.json",
         "https://trustvc.io/context/attachments-context.json",
-        "https://schemata.openattestation.com/io/tradetrust/bill-of-lading/1.0/bill-of-lading-context.json"
+        "https://schemata.openattestation.com/io/tradetrust/bill-of-lading/1.0/bill-of-lading-context.json",
       ],
-      "credentialStatus": {
-        "type": "TransferableRecords",
-        "tokenNetwork": {
-          "chain": "MATIC",
-          "chainId": "80002"
+      credentialStatus: {
+        type: "TransferableRecords",
+        tokenNetwork: {
+          chain: "MATIC",
+          chainId: "80002",
         },
-        "tokenRegistry": "0x3781bd0bbd15Bf5e45c7296115821933d47362be",
-        "tokenId": "e8ad3d0567f4e58a31f2f29e9be38b83527c6f76226d0d52a56935737979a21c"
+        tokenRegistry: "0x3781bd0bbd15Bf5e45c7296115821933d47362be",
+        tokenId: "e8ad3d0567f4e58a31f2f29e9be38b83527c6f76226d0d52a56935737979a21c",
       },
-      "renderMethod": [
+      renderMethod: [
         {
-          "id": "https://generic-templates.tradetrust.io",
-          "type": "EMBEDDED_RENDERER",
-          "templateName": "foo"
-        }
-      ],
-      "credentialSubject": {
-        "shipper": {
-          "address": {}
+          id: "https://generic-templates.tradetrust.io",
+          type: "EMBEDDED_RENDERER",
+          templateName: "foo",
         },
-        "consignee": {},
-        "notifyParty": {},
-        "blNumber": "20250107",
-        "scac": "20250107",
-        "links": {
-          "self": {
-            "href": "https://actions.tradetrust.io?q=%7B%22type%22%3A%22DOCUMENT%22%2C%22payload%22%3A%7B%22uri%22%3A%22https%3A%2F%2Ftradetrust-functions.netlify.app%2F.netlify%2Ffunctions%2Fstorage%2F91c8b97b-2a43-4c66-9cf7-b91ca0bd3813%22%2C%22key%22%3A%229428cac0631b4b0859e46abde7948449b79a2874a1ce4d4035fe75b35b3180a6%22%2C%22permittedActions%22%3A%5B%22STORE%22%5D%2C%22redirect%22%3A%22https%3A%2F%2Fdev.tradetrust.io%2F%22%2C%22chainId%22%3A%2220180427%22%7D%7D"
-          }
+      ],
+      credentialSubject: {
+        shipper: {
+          address: {},
+        },
+        consignee: {},
+        notifyParty: {},
+        blNumber: "20250107",
+        scac: "20250107",
+        links: {
+          self: {
+            href: "https://actions.tradetrust.io?q=%7B%22type%22%3A%22DOCUMENT%22%2C%22payload%22%3A%7B%22uri%22%3A%22https%3A%2F%2Ftradetrust-functions.netlify.app%2F.netlify%2Ffunctions%2Fstorage%2F91c8b97b-2a43-4c66-9cf7-b91ca0bd3813%22%2C%22key%22%3A%229428cac0631b4b0859e46abde7948449b79a2874a1ce4d4035fe75b35b3180a6%22%2C%22permittedActions%22%3A%5B%22STORE%22%5D%2C%22redirect%22%3A%22https%3A%2F%2Fdev.tradetrust.io%2F%22%2C%22chainId%22%3A%2220180427%22%7D%7D",
+          },
         },
         attachments: [
           { type: "application/pdf", filename: "abc.pdf", data: "data" },
-          { type: "txt", filename: "abc.txt", data: "data" }
+          { type: "txt", filename: "abc.txt", data: "data" },
         ],
       },
-      "issuanceDate": "2021-12-03T12:19:52Z",
-      "expirationDate": "2029-12-03T12:19:52Z",
-      "issuer": "did:web:trustvc.github.io:did:1",
-      "type": [
-        "VerifiableCredential"
-      ],
-      "id": "urn:bnid:_:01943fab-749b-7116-b040-5f8051a33a12",
-      "proof": {
-        "type": "BbsBlsSignature2020",
-        "created": "2025-01-07T07:29:51Z",
-        "proofPurpose": "assertionMethod",
-        "proofValue": "",
-        "verificationMethod": "did:web:trustvc.github.io:did:1#keys-1"
-      }
+      issuanceDate: "2021-12-03T12:19:52Z",
+      expirationDate: "2029-12-03T12:19:52Z",
+      issuer: "did:web:trustvc.github.io:did:1",
+      type: ["VerifiableCredential"],
+      id: "urn:bnid:_:01943fab-749b-7116-b040-5f8051a33a12",
+      proof: {
+        type: "BbsBlsSignature2020",
+        created: "2025-01-07T07:29:51Z",
+        proofPurpose: "assertionMethod",
+        proofValue: "",
+        verificationMethod: "did:web:trustvc.github.io:did:1#keys-1",
+      },
     };
     const templateRegistry: TemplateRegistry<any> = {
       foo: [

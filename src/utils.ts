@@ -1,5 +1,5 @@
 import { OpenAttestationDocument, v2, v3 } from "@tradetrust-tt/tradetrust";
-import { isWrappedV2Document, isWrappedV3Document, SignedVerifiableCredential, vc } from "@trustvc/trustvc";
+import { SignedVerifiableCredential, vc } from "@trustvc/trustvc";
 import { FunctionComponent } from "react";
 import { defaultTemplate } from "./DefaultTemplate";
 import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
@@ -55,7 +55,10 @@ const truePredicate = (): boolean => true;
 export function documentTemplates<D extends OpenAttestationDocument | SignedVerifiableCredential>(
   document: D,
   templateRegistry: TemplateRegistry<D>,
-  attachmentToComponent: (attachment: Attachment, document: OpenAttestationDocument | SignedVerifiableCredential) => FunctionComponent | null,
+  attachmentToComponent: (
+    attachment: Attachment,
+    document: OpenAttestationDocument | SignedVerifiableCredential,
+  ) => FunctionComponent | null,
 ): TemplateWithTypes<D>[] {
   if (!document) return [];
   // Find the template in the template registry or use a default template
@@ -73,10 +76,10 @@ export function documentTemplates<D extends OpenAttestationDocument | SignedVeri
 
   const attachments = vc.isSignedDocument(document)
     ? [(document as SignedVerifiableCredential)?.credentialSubject]
-      .flat()
-      ?.map((s) => s.attachments)
-      ?.filter(Boolean)
-      ?.flat()
+        .flat()
+        ?.map((s) => s.attachments)
+        ?.filter(Boolean)
+        ?.flat()
     : isV2Document(document) || isV3Document(document)
       ? document.attachments
       : [];
@@ -84,17 +87,17 @@ export function documentTemplates<D extends OpenAttestationDocument | SignedVeri
     .map((attachment: Attachment, index: number) =>
       isV2Attachment(attachment)
         ? {
-          id: `attachment-${index}`,
-          label: attachment.filename || "Unknown filename",
-          type: attachment.type || "Unknown filetype",
-          template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
-        }
+            id: `attachment-${index}`,
+            label: attachment.filename || "Unknown filename",
+            type: attachment.type || "Unknown filetype",
+            template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+          }
         : {
-          id: `attachment-${index}`,
-          label: attachment.fileName || "Unknown filename",
-          type: attachment.mimeType || "Unknown filetype",
-          template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
-        },
+            id: `attachment-${index}`,
+            label: attachment.fileName || "Unknown filename",
+            type: attachment.mimeType || "Unknown filetype",
+            template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+          },
     )
     .filter((template: any) => template.template);
 

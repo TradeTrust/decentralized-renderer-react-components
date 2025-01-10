@@ -17,7 +17,8 @@ export interface Template {
   id: string;
   label: string;
 }
-export interface TemplateWithComponent<D extends OpenAttestationDocument | SignedVerifiableCredential> extends Template {
+export interface TemplateWithComponent<D extends OpenAttestationDocument | SignedVerifiableCredential>
+  extends Template {
   template: ComponentType<TemplateProps<D>>;
   predicate?: ({ document }: { document: D }) => boolean;
 }
@@ -26,6 +27,7 @@ export interface TemplateRegistry<D extends OpenAttestationDocument | SignedVeri
   [key: string]: TemplateWithComponent<D>[];
 }
 
-export interface TemplateWithTypes<D extends OpenAttestationDocument | SignedVerifiableCredential> extends TemplateWithComponent<D> {
+export interface TemplateWithTypes<D extends OpenAttestationDocument | SignedVerifiableCredential>
+  extends TemplateWithComponent<D> {
   type: string;
 }
