@@ -28,7 +28,7 @@ export const isV3Document = (document: any): document is v3.OpenAttestationDocum
   return !!document["@context"] && !!document["openAttestationMetadata"];
 };
 
-const getTemplateName = (document: OpenAttestationDocument): string => {
+const getTemplateName = (document: OpenAttestationDocument | SignedVerifiableCredential): string => {
   if (isV2Document(document) && typeof document.$template === "object") {
     return document.$template.name;
   }
@@ -52,20 +52,20 @@ export const getAttachmentMimeType = (attachment: Attachment): string => {
 const truePredicate = (): boolean => true;
 
 // TODO this function is weird, returns current template + templates for attachments
-export function documentTemplates(
-  document: OpenAttestationDocument,
-  templateRegistry: TemplateRegistry,
-  attachmentToComponent: (attachment: Attachment, document: OpenAttestationDocument) => FunctionComponent | null,
-): TemplateWithTypes[] {
+export function documentTemplates<D extends OpenAttestationDocument | SignedVerifiableCredential>(
+  document: D,
+  templateRegistry: TemplateRegistry<D>,
+  attachmentToComponent: (attachment: Attachment, document: OpenAttestationDocument | SignedVerifiableCredential) => FunctionComponent | null,
+): TemplateWithTypes<D>[] {
   if (!document) return [];
   // Find the template in the template registry or use a default template
   const templateName = getTemplateName(document);
-  const selectedTemplate: TemplateWithComponent[] = (templateName && templateRegistry[templateName]) || [
+  const selectedTemplate: TemplateWithComponent<D>[] = (templateName && templateRegistry[templateName]) || [
     defaultTemplate,
   ];
 
   // Add type property to differentiate between custom template tabs VS attachments tab
-  const tabsRenderedFromCustomTemplates: TemplateWithTypes[] = selectedTemplate
+  const tabsRenderedFromCustomTemplates: TemplateWithTypes<D>[] = selectedTemplate
     .map((template) => {
       return { ...template, type: "custom-template" };
     })
@@ -73,30 +73,30 @@ export function documentTemplates(
 
   const attachments = vc.isSignedDocument(document)
     ? [(document as SignedVerifiableCredential)?.credentialSubject]
-        .flat()
-        ?.map((s) => s.attachments)
-        ?.filter(Boolean)
-        ?.flat()
-    : isWrappedV2Document(document) || isWrappedV3Document(document)
+      .flat()
+      ?.map((s) => s.attachments)
+      ?.filter(Boolean)
+      ?.flat()
+    : isV2Document(document) || isV3Document(document)
       ? document.attachments
       : [];
   const tabsRenderedFromAttachments = (attachments || ([] as Attachment[]))
-    .map((attachment, index) =>
+    .map((attachment: Attachment, index: number) =>
       isV2Attachment(attachment)
         ? {
-            id: `attachment-${index}`,
-            label: attachment.filename || "Unknown filename",
-            type: attachment.type || "Unknown filetype",
-            template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
-          }
+          id: `attachment-${index}`,
+          label: attachment.filename || "Unknown filename",
+          type: attachment.type || "Unknown filetype",
+          template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        }
         : {
-            id: `attachment-${index}`,
-            label: attachment.fileName || "Unknown filename",
-            type: attachment.mimeType || "Unknown filetype",
-            template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
-          },
+          id: `attachment-${index}`,
+          label: attachment.fileName || "Unknown filename",
+          type: attachment.mimeType || "Unknown filetype",
+          template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        },
     )
-    .filter((template) => template.template);
+    .filter((template: any) => template.template);
 
   return [...tabsRenderedFromCustomTemplates, ...tabsRenderedFromAttachments];
 }

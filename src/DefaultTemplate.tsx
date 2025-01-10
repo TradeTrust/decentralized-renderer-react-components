@@ -12,7 +12,7 @@ const container = {
 const textColor = `#333`;
 const paddingBox = `.75rem 1.25rem`;
 
-export const DefaultTemplate: React.FunctionComponent<TemplateProps> = (props) => {
+export const DefaultTemplate: React.FunctionComponent<TemplateProps<any>> = (props) => {
   return (
     <div id="default-template">
       <div style={{ ...container, ...{ color: textColor } }}>
@@ -82,7 +82,7 @@ export const DefaultTemplate: React.FunctionComponent<TemplateProps> = (props) =
   );
 };
 
-export const defaultTemplate: TemplateWithComponent = {
+export const defaultTemplate: TemplateWithComponent<any> = {
   id: "default-template",
   label: "Default",
   template: DefaultTemplate,
