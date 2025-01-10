@@ -8,6 +8,7 @@ import { HostConnector } from "../frame/HostConnector";
 import { DomListener } from "../common/DomListener";
 import { noAttachmentRenderer } from "./NoAttachmentRenderer";
 import { OpenAttestationDocument, WrappedDocument, v2, v3 } from "@tradetrust-tt/tradetrust";
+import { SignedVerifiableCredential } from "@trustvc/trustvc";
 
 const { trace } = getLogger("FramedDocumentRenderer");
 
@@ -16,33 +17,40 @@ export function FramedDocumentRenderer<D extends v3.OpenAttestationDocument = v3
   attachmentToComponent,
 }: {
   templateRegistry: TemplateRegistry<D>;
-  attachmentToComponent?: (attachment: Attachment, document: OpenAttestationDocument) => React.FunctionComponent | null;
+  attachmentToComponent?: (attachment: Attachment, document: D) => React.FunctionComponent | null;
 }): JSX.Element;
 export function FramedDocumentRenderer<D extends v2.OpenAttestationDocument = v2.OpenAttestationDocument>({
   templateRegistry,
   attachmentToComponent,
 }: {
   templateRegistry: TemplateRegistry<D>;
-  attachmentToComponent?: (attachment: Attachment, document: OpenAttestationDocument) => React.FunctionComponent | null;
+  attachmentToComponent?: (attachment: Attachment, document: D) => React.FunctionComponent | null;
 }): JSX.Element;
-export function FramedDocumentRenderer({
+export function FramedDocumentRenderer<D extends SignedVerifiableCredential = SignedVerifiableCredential>({
+  templateRegistry,
+  attachmentToComponent,
+}: {
+  templateRegistry: TemplateRegistry<D>;
+  attachmentToComponent?: (attachment: Attachment, document: D) => React.FunctionComponent | null;
+}): JSX.Element;
+export function FramedDocumentRenderer<D extends OpenAttestationDocument | SignedVerifiableCredential>({
   templateRegistry,
   attachmentToComponent = noAttachmentRenderer,
 }: {
-  templateRegistry: TemplateRegistry;
-  attachmentToComponent?: (attachment: Attachment, document: OpenAttestationDocument) => React.FunctionComponent | null;
+  templateRegistry: TemplateRegistry<D>;
+  attachmentToComponent?: (attachment: Attachment, document: D) => React.FunctionComponent | null;
 }): JSX.Element {
-  const [document, setDocument] = useState<OpenAttestationDocument>();
+  const [document, setDocument] = useState<D>();
   // used only to handle legacy setSelectTemplate function
   // dispatch function (below) is connected once through the frame and the reference to this function never change is
   // host and iframe. We need to use a reference to allow object mutation
-  const documentForLegacyUsage = useRef<OpenAttestationDocument>();
-  const [rawDocument, setRawDocument] = useState<WrappedDocument<OpenAttestationDocument>>();
+  const documentForLegacyUsage = useRef<D>();
+  const [rawDocument, setRawDocument] = useState<WrappedDocument<OpenAttestationDocument> | SignedVerifiableCredential>();
   const [templateName, setTemplateName] = useState<string>();
   const toHost = useRef<(actions: FrameActions) => void>(noop);
 
   const templates = document
-    ? documentTemplates(document, templateRegistry as TemplateRegistry<OpenAttestationDocument>, attachmentToComponent)
+    ? documentTemplates(document, templateRegistry as TemplateRegistry<D>, attachmentToComponent)
     : [];
   const templateConfiguration = templates.find((template) => template.id === templateName) || templates[0] || {};
   const Template = templateConfiguration.template;
@@ -56,16 +64,16 @@ export function FramedDocumentRenderer({
     (action: HostActions): any => {
       trace("in frame, received action", action.type);
       if (action.type === "RENDER_DOCUMENT") {
-        setDocument(action.payload.document);
-        documentForLegacyUsage.current = action.payload.document;
+        setDocument(action.payload.document as D);
+        documentForLegacyUsage.current = action.payload.document as D;
         if (action.payload.rawDocument) {
-          setRawDocument(action.payload.rawDocument);
+          setRawDocument(action.payload.rawDocument as any);
         }
 
         const run = async (): Promise<void> => {
           const templates = await documentTemplates(
-            action.payload.document,
-            templateRegistry as TemplateRegistry<OpenAttestationDocument>,
+            action.payload.document as D,
+            templateRegistry as TemplateRegistry<D>,
             attachmentToComponent,
           ).map((template) => ({
             id: template.id,
@@ -79,8 +87,8 @@ export function FramedDocumentRenderer({
         setTemplateName(action.payload);
       } else if (action.type === "GET_TEMPLATES") {
         const templates = documentTemplates(
-          action.payload,
-          templateRegistry as TemplateRegistry<OpenAttestationDocument>,
+          action.payload as D,
+          templateRegistry as TemplateRegistry<D>,
           attachmentToComponent,
         ).map((template) => ({
           id: template.id,

@@ -9,7 +9,7 @@ export interface Renderer {
 
 export interface TemplateProps<D extends OpenAttestationDocument | SignedVerifiableCredential> {
   document: D;
-  wrappedDocument?: WrappedDocument<D>;
+  wrappedDocument?: WrappedDocument<OpenAttestationDocument> | SignedVerifiableCredential;
   handleObfuscation: (field: string) => void;
 }
 

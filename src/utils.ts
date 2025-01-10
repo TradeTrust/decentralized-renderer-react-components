@@ -57,7 +57,7 @@ export function documentTemplates<D extends OpenAttestationDocument | SignedVeri
   templateRegistry: TemplateRegistry<D>,
   attachmentToComponent: (
     attachment: Attachment,
-    document: OpenAttestationDocument | SignedVerifiableCredential,
+    document: D,
   ) => FunctionComponent | null,
 ): TemplateWithTypes<D>[] {
   if (!document) return [];
