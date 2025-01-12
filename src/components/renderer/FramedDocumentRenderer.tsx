@@ -45,7 +45,9 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
   // dispatch function (below) is connected once through the frame and the reference to this function never change is
   // host and iframe. We need to use a reference to allow object mutation
   const documentForLegacyUsage = useRef<D>();
-  const [rawDocument, setRawDocument] = useState<WrappedDocument<OpenAttestationDocument> | SignedVerifiableCredential>();
+  const [rawDocument, setRawDocument] = useState<
+    WrappedDocument<OpenAttestationDocument> | SignedVerifiableCredential
+  >();
   const [templateName, setTemplateName] = useState<string>();
   const toHost = useRef<(actions: FrameActions) => void>(noop);
 

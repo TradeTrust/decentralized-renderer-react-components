@@ -1,7 +1,7 @@
 // actions sent by host to frame
-import { ActionType, createAction } from "typesafe-actions";
 import { OpenAttestationDocument, WrappedDocument } from "@tradetrust-tt/tradetrust";
 import { SignedVerifiableCredential } from "@trustvc/trustvc";
+import { ActionType, createAction } from "typesafe-actions";
 
 export const renderDocument = createAction("RENDER_DOCUMENT")<{
   document: OpenAttestationDocument | SignedVerifiableCredential;
@@ -20,7 +20,10 @@ export type HostActionsHandler = (action: HostActions) => void;
  * @deprecated use HostActions
  */
 export type LegacyHostActions = {
-  renderDocument: (document: OpenAttestationDocument | SignedVerifiableCredential, rawDocument?: WrappedDocument<OpenAttestationDocument> | SignedVerifiableCredential) => void;
+  renderDocument: (
+    document: OpenAttestationDocument | SignedVerifiableCredential,
+    rawDocument?: WrappedDocument<OpenAttestationDocument> | SignedVerifiableCredential,
+  ) => void;
   selectTemplateTab: (tabIndex: number) => void;
   print: () => void;
 };

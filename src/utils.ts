@@ -55,10 +55,7 @@ const truePredicate = (): boolean => true;
 export function documentTemplates<D extends OpenAttestationDocument | SignedVerifiableCredential>(
   document: D,
   templateRegistry: TemplateRegistry<D>,
-  attachmentToComponent: (
-    attachment: Attachment,
-    document: D,
-  ) => FunctionComponent | null,
+  attachmentToComponent: (attachment: Attachment, document: D) => FunctionComponent | null,
 ): TemplateWithTypes<D>[] {
   if (!document) return [];
   // Find the template in the template registry or use a default template
