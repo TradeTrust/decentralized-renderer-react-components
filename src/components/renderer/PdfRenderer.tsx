@@ -1,10 +1,12 @@
-import React, { FunctionComponent, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import { repeat } from "../../utils";
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { Renderer } from "../../types";
+import { repeat } from "../../utils";
 
-// TODO check this https://github.com/wojtekmaj/react-pdf#browserify-and-others
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+// TODO check this https://github.com/wojtekmaj/react-pdf/blob/v7.x/packages/react-pdf/README.md#use-external-cdn
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 /**
  * Component rendering pdf attachments. Uses [react-pdf](http://projects.wojtekmaj.pl/react-pdf/) under the hood.
@@ -17,6 +19,12 @@ export const PdfRenderer: FunctionComponent<Renderer> = ({ attachment }) => {
       file={`data:application/pdf;base64,${attachment.data}`}
       onLoadSuccess={({ numPages }) => {
         setNumberOfPages(numPages);
+      }}
+      onLoadError={(error) => {
+        console.error("Error loading document", error);
+      }}
+      onSourceError={(error) => {
+        console.error("Error loading document source", error);
       }}
     >
       <style
@@ -34,7 +42,10 @@ export const PdfRenderer: FunctionComponent<Renderer> = ({ attachment }) => {
       {repeat(numberOfPages)((index) => (
         // TODO: Dynamically resize width to fit container
         // https://github.com/wojtekmaj/react-pdf/issues/129
-        <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+        <Page
+          key={`page_${index + 1}`}
+          pageNumber={index + 1}
+        />
       ))}
     </Document>
   );
