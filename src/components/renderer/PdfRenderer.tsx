@@ -1,7 +1,7 @@
-import { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/TextLayer.css";
 import { Renderer } from "../../types";
 import { repeat } from "../../utils";
 
@@ -42,10 +42,7 @@ export const PdfRenderer: FunctionComponent<Renderer> = ({ attachment }) => {
       {repeat(numberOfPages)((index) => (
         // TODO: Dynamically resize width to fit container
         // https://github.com/wojtekmaj/react-pdf/issues/129
-        <Page
-          key={`page_${index + 1}`}
-          pageNumber={index + 1}
-        />
+        <Page key={`page_${index + 1}`} pageNumber={index + 1} />
       ))}
     </Document>
   );
