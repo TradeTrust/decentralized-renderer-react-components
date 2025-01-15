@@ -25,6 +25,7 @@ const config = {
     "\\.(d\\.ts|[jt]sx?)$": "ts-jest",
   },
   moduleNameMapper: {
+    "\\.(css|sass|scss)$": "identity-obj-proxy",
     "node:stream": "<rootDir>/node_modules/stream-browserify",
     "node:crypto": "<rootDir>/node_modules/crypto-browserify",
     "node:util": "<rootDir>/node_modules/util",
