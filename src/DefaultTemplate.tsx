@@ -21,7 +21,7 @@ export const DefaultTemplate: React.FunctionComponent<TemplateProps<any>> = (pro
             fontSize: "26px",
           }}
         >
-          This is the OpenAttestation default renderer
+          This is the default renderer
         </h1>
         <div
           role="alert"
