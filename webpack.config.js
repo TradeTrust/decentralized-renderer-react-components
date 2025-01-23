@@ -1,3 +1,5 @@
+const webpack = require("webpack");
+
 module.exports = {
   mode: process.env.NODE_ENV ?? "development",
   entry: "./src/index.tsx",
@@ -14,6 +16,13 @@ module.exports = {
     react: "react",
     "react-dom": "react-dom",
   },
+  plugins: [
+    new webpack.ContextReplacementPlugin(
+      /(@mattrglobal\/node-bbs-signatures)/,
+      `${__dirname}/node_modules/@mattrglobal/node-bbs-signatures`,
+      {}
+    )
+  ],
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
     fallback: {
