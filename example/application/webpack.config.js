@@ -23,8 +23,14 @@ module.exports = {
     },
     fallback: {
       vm: require.resolve("vm-browserify"),
-      crypto: require.resolve("crypto-browserify"),
       stream: require.resolve("stream-browserify"),
+      os: require.resolve("os-browserify/browser"),
+      crypto: require.resolve("crypto-browserify"),
+      path: require.resolve("path-browserify"),
+      buffer: require.resolve("buffer"),
+      "process/browser": require.resolve("process/browser"),
+      util: require.resolve("util/"),
+      events: require.resolve("events/"),
     },
   },
   module: {
@@ -36,11 +42,20 @@ module.exports = {
           loader: "babel-loader",
         },
       },
+      {
+        test: /\.css$/,
+        use: { loader: "css-loader", options: { url: false } },
+      },
     ],
   },
   plugins: [
     new webpack.ProvidePlugin({
       process: "process/browser",
     }),
+    new webpack.ContextReplacementPlugin(
+      /(@mattrglobal\/node-bbs-signatures)/,
+      `${__dirname}/node_modules/@mattrglobal/node-bbs-signatures`,
+      {}
+    )
   ],
 };
