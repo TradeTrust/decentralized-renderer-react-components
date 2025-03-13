@@ -57,7 +57,7 @@ export const DefaultTemplate: React.FunctionComponent<TemplateProps<any>> = (pro
               document. Please check with the certificate issuer. More information is available in{" "}
               <a
                 style={{ color: "initial", textDecoration: "underline" }}
-                href="https://openattestation.com/docs/advanced/custom-renderer"
+                href="https://docs.tradetrust.io/docs/introduction/key-components-of-tradetrust/add-ons/document-preview-templates/decentralised-renderer"
                 target="_blank"
                 rel="noopener noreferrer"
               >
