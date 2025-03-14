@@ -55,8 +55,6 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
   className = "",
   sandbox = "allow-scripts allow-same-origin allow-modals allow-popups",
 }) => {
-  const [onConnectedCalled, setOnConnectedCalled] = useState(false); // ensure on connected is called once only
-  const iframe = useRef<HTMLIFrameElement>(null);
   // this is used to store internally the latest templates shared in order to automatically transform
   // the selected template tab from the label to th index in the event we communicate with a legacy renderer
   // - templates is used to store the latest templates received and we use a ref in order to avoid triggering effect change when templates. Triggering the effect would mean that the consumer would be called again with the `onConnected` callback, which could be weird
@@ -81,10 +79,29 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
     };
   }, [dispatchProxy]);
 
-  const [connected, timeout, toFrame] = useChildFrame({ methods, dispatch: dispatchProxy, iframe });
+  const DEFAULT_RENDERER_URL = `https://generic-templates.tradetrust.io`;
+  const originalIframe = useRef<HTMLIFrameElement>(null);
+  const fallbackIframe = useRef<HTMLIFrameElement>(null);
+  const [sourceToUse, setSourceToUse] = useState<string>(source);
+  const [useFallbackSource, setUseFallbackSource] = useState(false);
+  const [hideDisplay, setHideDisplay] = useState(true);
+  const [connected, timeout, toFrame, updateIframeRef] = useChildFrame({
+    methods,
+    dispatch: dispatchProxy,
+    iframe: originalIframe,
+  });
+
   useEffect(() => {
-    if (connected && !onConnectedCalled) {
-      setOnConnectedCalled(true);
+    if (useFallbackSource) {
+      updateIframeRef(fallbackIframe.current);
+    } else {
+      updateIframeRef(originalIframe.current);
+    }
+  }, [useFallbackSource, updateIframeRef]);
+
+  useEffect(() => {
+    if (connected) {
+      setHideDisplay(false);
       onConnected(
         Object.assign((action: HostActions) => {
           // if toFrame.dispatch is set that means we are on the main track with modern renderer
@@ -110,27 +127,36 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
         }),
       );
     }
-  }, [connected, toFrame, onConnected, onConnectedCalled]);
+  }, [connected, toFrame, onConnected]);
 
   useEffect(() => {
     if (timeout) {
+      setSourceToUse(DEFAULT_RENDERER_URL);
+      setUseFallbackSource(true);
       dispatch(timeoutAction());
     }
-  }, [timeout, dispatch]);
+  }, [timeout, dispatch, DEFAULT_RENDERER_URL]);
 
   return (
     <>
-      {timeout ? (
-        <>
-          <h3>Connection timeout on renderer</h3>
-          <p>Please contact the administrator of {source}.</p>
-        </>
-      ) : (
+      {!useFallbackSource && (
         <iframe
           title="Decentralised Rendered Certificate"
           id="iframe"
-          ref={iframe}
-          src={source}
+          ref={originalIframe}
+          src={sourceToUse}
+          style={hideDisplay ? { display: "none" } : style}
+          className={className}
+          sandbox={sandbox}
+        />
+      )}
+
+      {useFallbackSource && (
+        <iframe
+          title="Decentralised Rendered Certificate"
+          id="iframe"
+          ref={fallbackIframe}
+          src={sourceToUse}
           style={style}
           className={className}
           sandbox={sandbox}

@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useState } from "react";
 import { connectToParent, connectToChild, ErrorCode } from "penpal";
 import { PenpalError } from "penpal/lib/types";
 import connectToChildV4 from "penpal-v4/lib/connectToChild";
@@ -8,7 +8,7 @@ import { inIframe } from "../../utils";
 import { getLogger } from "../../logger";
 
 const { trace } = getLogger("useFrame");
-const TIMEOUT = 30000;
+const TIMEOUT = 5000;
 
 type Status = "TIMEOUT" | "DISCONNECTED" | "CONNECTING" | "CONNECTED";
 
@@ -58,18 +58,34 @@ interface UseChildrenFrameProps {
 }
 export const useChildFrame = function (
   props: UseChildrenFrameProps,
-): [boolean, boolean, { dispatch?: HostActionsHandler } & Partial<LegacyHostActions>] {
+): [
+  boolean,
+  boolean,
+  { dispatch?: HostActionsHandler } & Partial<LegacyHostActions>,
+  (newIframe: HTMLIFrameElement | null) => void,
+] {
   const [childFrameConnection, setChildFrameConnection] = useState<any>();
   const [status, setStatus] = useState<Status>("DISCONNECTED");
+  const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(props.iframe.current);
+
+  const updateIframeRef = useCallback(
+    (newIframe: HTMLIFrameElement | null) => {
+      if (newIframe !== iframeRef) {
+        setIframeRef(newIframe);
+        setStatus("DISCONNECTED");
+      }
+    },
+    [iframeRef],
+  );
 
   useEffect(() => {
-    if (props.iframe.current && status === "DISCONNECTED") {
+    if (iframeRef && status === "DISCONNECTED") {
       const childV5 = connectToChild({
         methods: {
           dispatch: props.dispatch,
           ...props.methods,
         },
-        iframe: props.iframe.current,
+        iframe: iframeRef,
         timeout: TIMEOUT, // this will ensure connection to promise reject, when connection versions not match. otherwise it will be stucked in promise pending
       }).promise;
 
@@ -78,7 +94,7 @@ export const useChildFrame = function (
           dispatch: props.dispatch,
           ...props.methods,
         },
-        iframe: props.iframe.current,
+        iframe: iframeRef,
         timeout: TIMEOUT, // this will ensure connection to promise reject, when connection versions not match. otherwise it will be stucked in promise pending
       }).promise;
 
@@ -99,6 +115,6 @@ export const useChildFrame = function (
           }
         });
     }
-  }, [status, props]);
-  return [status === "CONNECTED", status === "TIMEOUT", childFrameConnection];
+  }, [status, iframeRef, props.methods, props.dispatch]);
+  return [status === "CONNECTED", status === "TIMEOUT", childFrameConnection, updateIframeRef];
 };
