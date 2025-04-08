@@ -112,4 +112,3 @@ export const getTemplateUrl = (rawDocument: WrappedOrSignedOpenAttestationDocume
     return rawDocument.openAttestationMetadata?.template?.url;
   }
 };
-};
