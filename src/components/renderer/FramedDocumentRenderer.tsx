@@ -41,6 +41,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
   attachmentToComponent?: (attachment: Attachment, document: D) => React.FunctionComponent | null;
 }): JSX.Element {
   const [document, setDocument] = useState<D>();
+  const [timeout, setTimeout] = useState<boolean>(false);
   // used only to handle legacy setSelectTemplate function
   // dispatch function (below) is connected once through the frame and the reference to this function never change is
   // host and iframe. We need to use a reference to allow object mutation
@@ -52,7 +53,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
   const toHost = useRef<(actions: FrameActions) => void>(noop);
 
   const templates = document
-    ? documentTemplates(document, templateRegistry as TemplateRegistry<D>, attachmentToComponent)
+    ? documentTemplates(document, templateRegistry as TemplateRegistry<D>, attachmentToComponent, timeout)
     : [];
   const templateConfiguration = templates.find((template) => template.id === templateName) || templates[0] || {};
   const Template = templateConfiguration.template;
@@ -72,11 +73,13 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
           setRawDocument(action.payload.rawDocument as any);
         }
 
+        setTimeout(!!action.payload.isTimeout);
         const run = async (): Promise<void> => {
           const templates = await documentTemplates(
             action.payload.document as D,
             templateRegistry as TemplateRegistry<D>,
             attachmentToComponent,
+            action.payload.isTimeout,
           ).map((template) => ({
             id: template.id,
             label: template.label,
@@ -92,6 +95,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
           action.payload as D,
           templateRegistry as TemplateRegistry<D>,
           attachmentToComponent,
+          timeout,
         ).map((template) => ({
           id: template.id,
           label: template.label,
@@ -105,7 +109,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
         throw new Error(`Action ${JSON.stringify(action)} is not handled`);
       }
     },
-    [templateRegistry, attachmentToComponent],
+    [templateRegistry, attachmentToComponent, timeout],
   );
   window.openAttestation = dispatch; // expose different actions for direct injection
 
@@ -118,6 +122,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
               document={document}
               wrappedDocument={rawDocument}
               handleObfuscation={(field) => toHost.current(obfuscateField(field))}
+              errorType={timeout ? "TIMEOUT" : "MISSING_RENDERER_URL"}
             />
           </div>
         )}

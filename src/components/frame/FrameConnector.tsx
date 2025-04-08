@@ -32,6 +32,10 @@ interface BaseFrameConnectorProps {
    * custom iframe sandbox properties to apply, will override default
    */
   sandbox?: string;
+  /**
+   * Use a fallback renderer when the frame fails to load
+   */
+  useFallbackRenderer?: boolean;
 }
 interface FrameConnectorProps extends BaseFrameConnectorProps {
   /**
@@ -54,6 +58,7 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
   style,
   className = "",
   sandbox = "allow-scripts allow-same-origin allow-modals allow-popups",
+  useFallbackRenderer,
 }) => {
   // this is used to store internally the latest templates shared in order to automatically transform
   // the selected template tab from the label to th index in the event we communicate with a legacy renderer
@@ -107,6 +112,9 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
           // if toFrame.dispatch is set that means we are on the main track with modern renderer
           // there is nothing to do but to call dispatch with the action provided.
           if (toFrame.dispatch) {
+            if (action.type === "RENDER_DOCUMENT") {
+              action.payload = { ...action.payload, isTimeout: useFallbackSource };
+            }
             toFrame.dispatch(action);
           } else {
             // otherwise if toFrame.dispatch is NOT set that means that we are dealing with a legacy renderer
@@ -127,31 +135,39 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
         }),
       );
     }
-  }, [connected, toFrame, onConnected]);
+  }, [connected, toFrame, onConnected, useFallbackSource]);
 
   useEffect(() => {
     if (timeout) {
-      setSourceToUse(DEFAULT_RENDERER_URL);
-      setUseFallbackSource(true);
+      if (useFallbackRenderer) {
+        setSourceToUse(DEFAULT_RENDERER_URL);
+        setUseFallbackSource(true);
+      }
+
       dispatch(timeoutAction());
     }
-  }, [timeout, dispatch, DEFAULT_RENDERER_URL]);
+  }, [timeout, dispatch, DEFAULT_RENDERER_URL, useFallbackRenderer]);
 
   return (
     <>
-      {!useFallbackSource && (
-        <iframe
-          title="Decentralised Rendered Certificate"
-          id="iframe"
-          ref={originalIframe}
-          src={sourceToUse}
-          style={hideDisplay ? { display: "none" } : style}
-          className={className}
-          sandbox={sandbox}
-        />
-      )}
-
-      {useFallbackSource && (
+      {!useFallbackSource ? (
+        timeout ? (
+          <>
+            <h3>Connection timeout on renderer</h3>
+            <p>Please contact the administrator of {source}.</p>
+          </>
+        ) : (
+          <iframe
+            title="Decentralised Rendered Certificate"
+            id="iframe"
+            ref={originalIframe}
+            src={sourceToUse}
+            style={hideDisplay ? { display: "none" } : style}
+            className={className}
+            sandbox={sandbox}
+          />
+        )
+      ) : (
         <iframe
           title="Decentralised Rendered Certificate"
           id="iframe"

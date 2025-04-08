@@ -11,6 +11,7 @@ export interface TemplateProps<D extends OpenAttestationDocument | SignedVerifia
   document: D;
   wrappedDocument?: WrappedDocument<OpenAttestationDocument> | SignedVerifiableCredential;
   handleObfuscation: (field: string) => void;
+  errorType?: string;
 }
 
 export interface Template {

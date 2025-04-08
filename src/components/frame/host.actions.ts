@@ -6,6 +6,7 @@ import { ActionType, createAction } from "typesafe-actions";
 export const renderDocument = createAction("RENDER_DOCUMENT")<{
   document: OpenAttestationDocument | SignedVerifiableCredential;
   rawDocument?: WrappedDocument<OpenAttestationDocument> | SignedVerifiableCredential;
+  isTimeout?: boolean;
 }>();
 
 export const selectTemplate = createAction("SELECT_TEMPLATE")<string>();

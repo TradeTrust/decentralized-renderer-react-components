@@ -1,5 +1,5 @@
-import { OpenAttestationDocument, v2, v3 } from "@tradetrust-tt/tradetrust";
-import { SignedVerifiableCredential, vc } from "@trustvc/trustvc";
+import { v2, v3 } from "@tradetrust-tt/tradetrust";
+import { SignedVerifiableCredential, vc, OpenAttestationDocument, WrappedDocument } from "@trustvc/trustvc";
 import { FunctionComponent } from "react";
 import { defaultTemplate } from "./DefaultTemplate";
 import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
@@ -56,13 +56,14 @@ export function documentTemplates<D extends OpenAttestationDocument | SignedVeri
   document: D,
   templateRegistry: TemplateRegistry<D>,
   attachmentToComponent: (attachment: Attachment, document: D) => FunctionComponent | null,
+  setForceDefault?: boolean,
 ): TemplateWithTypes<D>[] {
   if (!document) return [];
   // Find the template in the template registry or use a default template
   const templateName = getTemplateName(document);
-  const selectedTemplate: TemplateWithComponent<D>[] = (templateName && templateRegistry[templateName]) || [
-    defaultTemplate,
-  ];
+  const selectedTemplate: TemplateWithComponent<D>[] = setForceDefault
+    ? [defaultTemplate]
+    : (templateName && templateRegistry[templateName]) || [defaultTemplate];
 
   // Add type property to differentiate between custom template tabs VS attachments tab
   const tabsRenderedFromCustomTemplates: TemplateWithTypes<D>[] = selectedTemplate
@@ -100,3 +101,20 @@ export function documentTemplates<D extends OpenAttestationDocument | SignedVeri
 
   return [...tabsRenderedFromCustomTemplates, ...tabsRenderedFromAttachments];
 }
+export type WrappedOrSignedOpenAttestationDocument = WrappedDocument<OpenAttestationDocument> & {
+  openAttestationMetadata?: { template: { url: string } };
+};
+export const getTemplateUrl = (rawDocument: WrappedOrSignedOpenAttestationDocument): string | undefined => {
+  if (vc.isSignedDocument(rawDocument)) {
+    return [(rawDocument as unknown as SignedVerifiableCredential).renderMethod]?.flat()?.[0]?.id;
+  } else if (vc.isWrappedV2Document(rawDocument)) {
+    const documentData = vc.getDataV2(rawDocument);
+    return typeof documentData.$template === "object" ? documentData.$template.url : undefined;
+  } else if (vc.isWrappedV3Document(rawDocument)) {
+    return rawDocument.openAttestationMetadata?.template?.url;
+  }
+  // disable v4 verification for the time being
+  // else {
+  //   return rawDocument.renderMethod?.url;
+  // }
+};
