@@ -9,7 +9,7 @@ type NotificationType = {
 
 const notificationTypes: { [key: string]: NotificationType } = {
   MISSING_RENDERER_URL: {
-    title: "Missing Rederer URL",
+    title: "Missing Renderer",
     description: () => (
       <>
         This document doesn&apos;t specify how to display itself. We&apos;re showing you the raw document data, which is
