@@ -1,5 +1,5 @@
 import { v2, v3 } from "@tradetrust-tt/tradetrust";
-import { SignedVerifiableCredential, vc, OpenAttestationDocument, WrappedDocument, getDataV2 } from "@trustvc/trustvc";
+import { SignedVerifiableCredential, vc, OpenAttestationDocument, WrappedDocument } from "@trustvc/trustvc";
 import { FunctionComponent } from "react";
 import { defaultTemplate } from "./DefaultTemplate";
 import { Attachment, TemplateRegistry, TemplateWithComponent, TemplateWithTypes } from "./types";
