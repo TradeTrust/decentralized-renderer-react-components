@@ -69,7 +69,6 @@ const notificationTypes: { [key: string]: NotificationType } = {
   },
 };
 export const NotificationBanner: React.FunctionComponent<any> = ({ notificationType, templateURL }) => {
-  console.log(notificationType, templateURL);
   const notification = notificationTypes[notificationType];
   const [expanded, setExpanded] = useState(true);
   return (
