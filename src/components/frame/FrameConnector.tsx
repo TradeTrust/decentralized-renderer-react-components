@@ -15,7 +15,7 @@ interface BaseFrameConnectorProps {
   /**
    * URL of the content of the frame to render (URL to a decentralized renderer)
    */
-  source: string;
+  source: string | undefined;
   /**
    * Function called once the connection has been established with the frame. It provides another function to send actions to the frame.
    */
@@ -87,7 +87,7 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
   const DEFAULT_RENDERER_URL = `https://generic-templates.tradetrust.io`;
   const originalIframe = useRef<HTMLIFrameElement>(null);
   const fallbackIframe = useRef<HTMLIFrameElement>(null);
-  const [sourceToUse, setSourceToUse] = useState<string>(source);
+  const [sourceToUse, setSourceToUse] = useState<string>(source ? source : DEFAULT_RENDERER_URL);
   const [useFallbackSource, setUseFallbackSource] = useState(false);
   const [hideDisplay, setHideDisplay] = useState(true);
   const [connected, timeout, toFrame, updateIframeRef] = useChildFrame({
