@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 type NotificationType = {
   title: string;
@@ -8,7 +8,7 @@ type NotificationType = {
 };
 
 const notificationTypes: { [key: string]: NotificationType } = {
-  MISSING_RENDERER_URL: {
+  MISSING_RENDERER: {
     title: "Missing Renderer",
     description: () => (
       <>
@@ -69,7 +69,9 @@ const notificationTypes: { [key: string]: NotificationType } = {
   },
 };
 export const NotificationBanner: React.FunctionComponent<any> = ({ notificationType, templateURL }) => {
+  console.log(notificationType, templateURL);
   const notification = notificationTypes[notificationType];
+  const [expanded, setExpanded] = useState(true);
   return (
     <div
       style={{
@@ -118,28 +120,53 @@ export const NotificationBanner: React.FunctionComponent<any> = ({ notificationT
             background: "none",
             border: "none",
             cursor: "pointer",
+            transition: "transform 0.3s",
           }}
+          onClick={() => setExpanded(!expanded)}
           onMouseOver={(e) => (e.currentTarget.style.textDecoration = "underline")}
           onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
         >
-          Show less
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M10.1404 11.0002C10.1013 11.0391 10.0381 11.0392 9.99905 11.0002L6.47856 7.48674C6.18537 7.19414 5.7105 7.19462 5.4179 7.48781C5.1253 7.78099 5.12578 8.25587 5.41896 8.54847L9.54017 12.6614C9.83336 12.954 10.3082 12.9536 10.6008 12.6604C10.6018 12.6594 10.6028 12.6584 10.6037 12.6574L14.7175 8.5482C15.0106 8.25547 15.0109 7.7806 14.7181 7.48754C14.4254 7.19449 13.9505 7.19422 13.6575 7.48695L10.1404 11.0002Z"
-              fill="#2D5FAA"
-            />
-          </svg>
+          {expanded ? (
+            <>
+              Show less
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10.1404 11.0002C10.1013 11.0391 10.0381 11.0392 9.99905 11.0002L6.47856 7.48674C6.18537 7.19414 5.7105 7.19462 5.4179 7.48781C5.1253 7.78099 5.12578 8.25587 5.41896 8.54847L9.54017 12.6614C9.83336 12.954 10.3082 12.9536 10.6008 12.6604C10.6018 12.6594 10.6028 12.6584 10.6037 12.6574L14.7175 8.5482C15.0106 8.25547 15.0109 7.7806 14.7181 7.48754C14.4254 7.19449 13.9505 7.19422 13.6575 7.48695L10.1404 11.0002Z"
+                  fill="#2D5FAA"
+                />
+              </svg>
+            </>
+          ) : (
+            <>
+              Show more
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g transform="rotate(90 10 10)">
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M10.1404 11.0002C10.1013 11.0391 10.0381 11.0392 9.99905 11.0002L6.47856 7.48674C6.18537 7.19414 5.7105 7.19462 5.4179 7.48781C5.1253 7.78099 5.12578 8.25587 5.41896 8.54847L9.54017 12.6614C9.83336 12.954 10.3082 12.9536 10.6008 12.6604C10.6018 12.6594 10.6028 12.6584 10.6037 12.6574L14.7175 8.5482C15.0106 8.25547 15.0109 7.7806 14.7181 7.48754C14.4254 7.19449 13.9505 7.19422 13.6575 7.48695L10.1404 11.0002Z"
+                    fill="#2D5FAA"
+                  />
+                </g>
+              </svg>
+            </>
+          )}
         </button>
       </div>
+
       <p
         style={{
-          padding: "8px",
+          padding: expanded ? "8px" : "0",
           gap: "8px",
           fontSize: "14px",
           color: "#4B5563",
           marginLeft: "28px",
+          maxHeight: expanded ? "1000px" : "0",
+          opacity: expanded ? 1 : 0,
+          overflow: "hidden",
+          transition: "all 0.3s ease-in-out",
         }}
       >
         {notification.description(templateURL)}

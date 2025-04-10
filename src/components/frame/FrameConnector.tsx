@@ -87,7 +87,8 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
   const DEFAULT_RENDERER_URL = `https://generic-templates.tradetrust.io`;
   const originalIframe = useRef<HTMLIFrameElement>(null);
   const fallbackIframe = useRef<HTMLIFrameElement>(null);
-  const [sourceToUse, setSourceToUse] = useState<string>(source ? source : DEFAULT_RENDERER_URL);
+  const [sourceToUse, setSourceToUse] = useState<string>(source ?? DEFAULT_RENDERER_URL);
+  const [errorType, setErrorType] = useState<string | undefined>(undefined);
   const [useFallbackSource, setUseFallbackSource] = useState(false);
   const [hideDisplay, setHideDisplay] = useState(true);
   const [connected, timeout, toFrame, updateIframeRef] = useChildFrame({
@@ -113,7 +114,11 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
           // there is nothing to do but to call dispatch with the action provided.
           if (toFrame.dispatch) {
             if (action.type === "RENDER_DOCUMENT") {
-              action.payload = { ...action.payload, isTimeout: useFallbackSource };
+              action.payload = {
+                ...action.payload,
+                useDefaultTemplate: useFallbackSource,
+                errorType: errorType,
+              };
             }
             toFrame.dispatch(action);
           } else {
@@ -135,13 +140,25 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
         }),
       );
     }
-  }, [connected, toFrame, onConnected, useFallbackSource]);
+  }, [connected, toFrame, onConnected, useFallbackSource, errorType]);
+
+  useEffect(() => {
+    if (errorType) {
+      setUseFallbackSource(true);
+    }
+  }, [errorType]);
+
+  useEffect(() => {
+    if (!source) {
+      setErrorType("MISSING_RENDERER");
+    }
+  }, [source]);
 
   useEffect(() => {
     if (timeout) {
       if (useFallbackRenderer) {
         setSourceToUse(DEFAULT_RENDERER_URL);
-        setUseFallbackSource(true);
+        setErrorType("TIMEOUT");
       }
 
       dispatch(timeoutAction());
