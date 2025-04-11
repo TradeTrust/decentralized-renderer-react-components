@@ -68,7 +68,10 @@ const notificationTypes: { [key: string]: NotificationType } = {
     bgColor: "#FFEEED",
   },
 };
-export const NotificationBanner: React.FunctionComponent<any> = ({ notificationType, templateURL }) => {
+export const NotificationBanner: React.FunctionComponent<any> = ({
+  notificationType = "MISSING_RENDERER",
+  templateURL,
+}) => {
   const notification = notificationTypes[notificationType];
   const [expanded, setExpanded] = useState(true);
   return (

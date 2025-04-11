@@ -41,7 +41,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
   attachmentToComponent?: (attachment: Attachment, document: D) => React.FunctionComponent | null;
 }): JSX.Element {
   const [document, setDocument] = useState<D>();
-  const [useDefaultTemplate, setUseDefaultTemplate] = useState<boolean>(false);
+  const [useFallbackSource, setUseFallbackSource] = useState<boolean>(false);
   const [errorType, setErrorType] = useState<string>();
   // used only to handle legacy setSelectTemplate function
   // dispatch function (below) is connected once through the frame and the reference to this function never change is
@@ -54,7 +54,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
   const toHost = useRef<(actions: FrameActions) => void>(noop);
 
   const templates = document
-    ? documentTemplates(document, templateRegistry as TemplateRegistry<D>, attachmentToComponent, useDefaultTemplate)
+    ? documentTemplates(document, templateRegistry as TemplateRegistry<D>, attachmentToComponent, useFallbackSource)
     : [];
   const templateConfiguration = templates.find((template) => template.id === templateName) || templates[0] || {};
   const Template = templateConfiguration.template;
@@ -74,7 +74,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
           setRawDocument(action.payload.rawDocument as any);
         }
 
-        setUseDefaultTemplate(!!action.payload.useDefaultTemplate);
+        setUseFallbackSource(!!action.payload.useFallbackSource);
 
         if (action.payload.errorType) setErrorType(action.payload.errorType);
         const run = async (): Promise<void> => {
@@ -82,7 +82,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
             action.payload.document as D,
             templateRegistry as TemplateRegistry<D>,
             attachmentToComponent,
-            action.payload.useDefaultTemplate,
+            action.payload.useFallbackSource,
           ).map((template) => ({
             id: template.id,
             label: template.label,
@@ -98,7 +98,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
           action.payload as D,
           templateRegistry as TemplateRegistry<D>,
           attachmentToComponent,
-          useDefaultTemplate,
+          useFallbackSource,
         ).map((template) => ({
           id: template.id,
           label: template.label,
@@ -112,7 +112,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
         throw new Error(`Action ${JSON.stringify(action)} is not handled`);
       }
     },
-    [templateRegistry, attachmentToComponent, useDefaultTemplate],
+    [templateRegistry, attachmentToComponent, useFallbackSource],
   );
   window.openAttestation = dispatch; // expose different actions for direct injection
 
@@ -125,7 +125,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
               document={document}
               wrappedDocument={rawDocument}
               handleObfuscation={(field) => toHost.current(obfuscateField(field))}
-              errorType={errorType ?? "MISSING_RENDERER"}
+              errorType={errorType}
             />
           </div>
         )}

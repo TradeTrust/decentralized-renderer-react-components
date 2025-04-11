@@ -116,8 +116,8 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
             if (action.type === "RENDER_DOCUMENT") {
               action.payload = {
                 ...action.payload,
-                useDefaultTemplate: useFallbackSource,
-                errorType: errorType,
+                useFallbackSource,
+                errorType,
               };
             }
             toFrame.dispatch(action);
