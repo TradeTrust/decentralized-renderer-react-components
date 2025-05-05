@@ -35,7 +35,8 @@ const getTemplateName = (document: OpenAttestationDocument | SignedVerifiableCre
   if (isV3Document(document) && document.openAttestationMetadata.template) {
     return document.openAttestationMetadata.template.name;
   }
-  if (vc.isRawDocument(document)) {
+  if (vc.isSignedDocument(document) || vc.isRawDocument(document)) {
+    //allow raw document for creator preview page
     return [document.renderMethod]?.flat()?.[0]?.templateName;
   }
   return "";
@@ -61,6 +62,7 @@ export function documentTemplates<D extends OpenAttestationDocument | SignedVeri
   if (!document) return [];
   // Find the template in the template registry or use a default template
   const templateName = getTemplateName(document);
+  console.log("template", templateName);
   const selectedTemplate: TemplateWithComponent<D>[] = setForceDefault
     ? [defaultTemplate]
     : (templateName && templateRegistry[templateName]) || [defaultTemplate];
