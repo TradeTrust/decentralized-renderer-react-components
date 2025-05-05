@@ -35,7 +35,7 @@ const getTemplateName = (document: OpenAttestationDocument | SignedVerifiableCre
   if (isV3Document(document) && document.openAttestationMetadata.template) {
     return document.openAttestationMetadata.template.name;
   }
-  if (vc.isSignedDocument(document)) {
+  if (vc.isSignedDocument(document) || vc.isRawDocument(document)) {
     return [document.renderMethod]?.flat()?.[0]?.templateName;
   }
   return "";
