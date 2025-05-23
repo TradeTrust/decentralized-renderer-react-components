@@ -82,21 +82,14 @@ export function documentTemplates<D extends OpenAttestationDocument | SignedVeri
       ? document.attachments
       : [];
   const tabsRenderedFromAttachments = (attachments || ([] as Attachment[]))
-    .map((attachment: Attachment, index: number) =>
-      isV2Attachment(attachment)
-        ? {
-            id: `attachment-${index}`,
-            label: attachment.filename || "Unknown filename",
-            type: attachment.type || "Unknown filetype",
-            template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
-          }
-        : {
-            id: `attachment-${index}`,
-            label: attachment.fileName || "Unknown filename",
-            type: attachment.mimeType || "Unknown filetype",
-            template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
-          },
-    )
+    .map((attachment: Attachment, index: number) => {
+      return {
+        id: `attachment-${index}`,
+        label: ((attachment as any).fileName ?? (attachment as any)?.filename) || "Unknown filename",
+        type: ((attachment as any).type ?? (attachment as any).mimeType) || "Unknown filetype",
+        template: attachmentToComponent(attachment, document)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+      };
+    })
     .filter((template: any) => template.template);
 
   return [...tabsRenderedFromCustomTemplates, ...tabsRenderedFromAttachments];
