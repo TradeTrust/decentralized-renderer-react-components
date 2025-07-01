@@ -34,6 +34,7 @@ interface BaseFrameConnectorProps {
   sandbox?: string;
   /**
    * Use a fallback renderer when the frame fails to load
+   * @default false
    */
   useFallbackRenderer?: boolean;
 }
@@ -58,7 +59,7 @@ export const FrameConnector: FunctionComponent<FrameConnectorProps> = ({
   style,
   className = "",
   sandbox = "allow-scripts allow-same-origin allow-modals allow-popups",
-  useFallbackRenderer,
+  useFallbackRenderer = false,
 }) => {
   // this is used to store internally the latest templates shared in order to automatically transform
   // the selected template tab from the label to th index in the event we communicate with a legacy renderer
