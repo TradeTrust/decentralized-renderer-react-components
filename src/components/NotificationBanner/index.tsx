@@ -46,7 +46,7 @@ const notificationTypes: { [key: string]: NotificationType } = {
       <>
         We&apos;re showing you the raw document data instead, which is still valid and verified. Connection to the
         renderer or the template URL (
-        <a href="#" style={{ color: "#2563EB", textDecoration: "underline" }}>
+        <a href={templateURL} style={{ color: "#2563EB", textDecoration: "underline" }}>
           {templateURL}
         </a>
         ) may be invalid.
