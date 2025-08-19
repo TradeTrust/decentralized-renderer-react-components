@@ -6,9 +6,5 @@ module.exports = {
     "@emotion/babel-preset-css-prop",
     "@babel/preset-flow",
   ],
-  plugins: [
-    "@babel/plugin-transform-class-properties",
-    "@babel/plugin-transform-private-methods",
-    "@babel/plugin-transform-class-static-block",
-  ],
+  plugins: ["@babel/plugin-transform-class-properties", "@babel/plugin-transform-private-methods"],
 };
