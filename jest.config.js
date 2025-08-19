@@ -31,8 +31,9 @@ const config = {
     "node:util": "<rootDir>/node_modules/util",
     "node:events": "<rootDir>/node_modules/events",
     "node:process": "<rootDir>/node_modules/process",
+    "^cborg$": "<rootDir>/node_modules/cborg",
   },
-  transformIgnorePatterns: ["node_modules/?!(@tradetrust-tt).*/"],
+  transformIgnorePatterns: ["node_modules/?!(@tradetrust-tt|@digitalbazaar|@trustvc|cborg).*/"],
 };
 
 module.exports = config;
