@@ -27,15 +27,12 @@ const config = {
   moduleNameMapper: {
     "\\.(css|sass|scss)$": "identity-obj-proxy",
     "node:stream": "<rootDir>/node_modules/stream-browserify",
-    "node:crypto": "<rootDir>/node_modules/crypto-browserify",
     "node:util": "<rootDir>/node_modules/util",
     "node:events": "<rootDir>/node_modules/events",
     "node:process": "<rootDir>/node_modules/process",
     "^cborg$": "<rootDir>/node_modules/cborg/cborg.js",
   },
-  transformIgnorePatterns: [
-    "node_modules/(?!(@tradetrust-tt|@digitalbazaar|@trustvc|cborg|multiformats|base64url-universal|base58-universal|uint8arrays|.*-universal).*)"
-  ],
+  transformIgnorePatterns: ["node_modules/?!(@tradetrust-tt).*/"],
 };
 
 module.exports = config;
