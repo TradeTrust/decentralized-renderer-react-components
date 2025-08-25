@@ -30,7 +30,6 @@ const isValidBase64 = (str: string): boolean => {
 export const PdfRenderer: FunctionComponent<Renderer> = ({ attachment }) => {
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  console.log("attachment", attachment);
 
   // Validate base64 data on component mount
   React.useEffect(() => {
