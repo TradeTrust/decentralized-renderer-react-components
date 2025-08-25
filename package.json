@@ -16,7 +16,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@peculiar/webcrypto": "^1.5.0",
     "@tradetrust-tt/tradetrust": "^6.10.0",
-    "@trustvc/trustvc": "^1.6.0-alpha.5",
+    "@trustvc/trustvc": "^1.6.0-alpha.6",
     "crypto-browserify": "^3.12.1",
     "debug": "^4.4.0",
     "os-browserify": "^0.3.0",

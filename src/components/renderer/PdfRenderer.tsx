@@ -11,20 +11,59 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 /**
  * Component rendering pdf attachments. Uses [react-pdf](http://projects.wojtekmaj.pl/react-pdf/) under the hood.
  */
+// Helper function to validate base64 data
+const isValidBase64 = (str: string): boolean => {
+  try {
+    // Check if string contains only valid base64 characters
+    const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+    if (!base64Regex.test(str)) {
+      return false;
+    }
+    // Try to decode to verify it's valid base64
+    atob(str);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 export const PdfRenderer: FunctionComponent<Renderer> = ({ attachment }) => {
   const [numberOfPages, setNumberOfPages] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  console.log("attachment", attachment);
+
+  // Validate base64 data on component mount
+  React.useEffect(() => {
+    if (!attachment.data || !isValidBase64(attachment.data)) {
+      setError("The PDF file appears to be corrupted or invalid. Please contact the issuer.");
+    }
+  }, [attachment.data]);
+  // Show error state if there's an error
+  if (error) {
+    return (
+      <div style={{ padding: "20px", textAlign: "center", color: "#d32f2f" }}>
+        <h3>Error Loading PDF</h3>
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <Document
       file={`data:application/pdf;base64,${attachment.data}`}
+      loading={<div style={{ padding: "20px", textAlign: "center" }}>Loading PDF...</div>}
+      error={<div style={{ padding: "20px", textAlign: "center", color: "#d32f2f" }}>Failed to load PDF</div>}
       onLoadSuccess={({ numPages }) => {
         setNumberOfPages(numPages);
+        setError(null);
       }}
       onLoadError={(error) => {
         console.error("Error loading document", error);
+        setError(`Failed to load PDF: ${error.message || "Unknown error"}`);
       }}
       onSourceError={(error) => {
         console.error("Error loading document source", error);
+        setError(`PDF source error: ${error.message || "Invalid or corrupted PDF data"}`);
       }}
     >
       <style
