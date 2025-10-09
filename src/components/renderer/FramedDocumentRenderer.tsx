@@ -120,7 +120,7 @@ export function FramedDocumentRenderer<D extends OpenAttestationDocument | Signe
     <DomListener onUpdate={(height) => toHost.current(updateHeight(height))}>
       <HostConnector dispatch={dispatch} onConnected={onConnected}>
         {document && Template && (
-          <div className="frameless-tabs" id="rendered-certificate">
+          <div className="container" id="rendered-certificate">
             <Template
               document={document}
               wrappedDocument={rawDocument}

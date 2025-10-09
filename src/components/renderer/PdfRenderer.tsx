@@ -50,15 +50,17 @@ export const PdfRenderer: FunctionComponent<Renderer> = ({ attachment }) => {
           background: "rgba(247, 248, 252, 1)",
           border: "1px solid rgba(231, 234, 236, 1)",
           borderRadius: "8px",
+          margin: "0 auto",
         }}
       >
-        <img src={attachmentErrorIcon} alt="Crash Icon" style={{ width: "120px", height: "120px" }} />
+        <img src={attachmentErrorIcon} alt="Crash Icon" style={{ width: "120px", height: "120px", margin: "0 auto" }} />
         <h3
           style={{
             fontFamily: "Gilroy",
             fontWeight: 700,
             fontSize: "20px",
             lineHeight: "24px",
+            margin: "15px 0",
           }}
         >
           Unable to Load Attachment
