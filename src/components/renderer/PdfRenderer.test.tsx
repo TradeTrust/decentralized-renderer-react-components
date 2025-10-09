@@ -2,6 +2,9 @@ import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { PdfRenderer } from "./PdfRenderer";
 
+// Mock the PNG image file to prevent Jest from trying to parse it
+jest.mock("./attachment-error.png", () => "mocked-image-path");
+
 // Mock react-pdf to simulate different scenarios
 jest.mock(
   "react-pdf",
@@ -32,35 +35,32 @@ jest.mock(
 
 describe("component PdfRenderer", () => {
   it("should show error message for invalid base64 data like 'BASE64_ENCODED_FILE'", async () => {
-    const { getByText } = render(
+    const { getByAltText } = render(
       <PdfRenderer attachment={{ type: "application/pdf", data: "BASE64_ENCODED_FILE", filename: "test.pdf" }} />,
     );
 
     await waitFor(() => {
-      expect(getByText("Error Loading PDF")).toBeDefined();
-      expect(getByText("The PDF file appears to be corrupted or invalid. Please contact the issuer.")).toBeDefined();
+      expect(getByAltText("Crash Icon")).toBeDefined();
     });
   });
 
   it("should show error message for empty data", async () => {
-    const { getByText } = render(
+    const { getByAltText } = render(
       <PdfRenderer attachment={{ type: "application/pdf", data: "", filename: "test.pdf" }} />,
     );
 
     await waitFor(() => {
-      expect(getByText("Error Loading PDF")).toBeDefined();
-      expect(getByText("The PDF file appears to be corrupted or invalid. Please contact the issuer.")).toBeDefined();
+      expect(getByAltText("Crash Icon")).toBeDefined();
     });
   });
 
   it("should show error message for invalid base64 characters", async () => {
-    const { getByText } = render(
+    const { getByAltText } = render(
       <PdfRenderer attachment={{ type: "application/pdf", data: "invalid!@#$%characters", filename: "test.pdf" }} />,
     );
 
     await waitFor(() => {
-      expect(getByText("Error Loading PDF")).toBeDefined();
-      expect(getByText("The PDF file appears to be corrupted or invalid. Please contact the issuer.")).toBeDefined();
+      expect(getByAltText("Crash Icon")).toBeDefined();
     });
   });
 });

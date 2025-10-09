@@ -40,9 +40,36 @@ export const PdfRenderer: FunctionComponent<Renderer> = ({ attachment }) => {
   // Show error state if there's an error
   if (error) {
     return (
-      <div style={{ padding: "20px", textAlign: "center", color: "#d32f2f" }}>
-        <h3>Error Loading PDF</h3>
-        <p>{error}</p>
+      <div
+        style={{
+          padding: "20px",
+          textAlign: "center",
+          background: "rgba(247, 248, 252, 1)",
+          border: "1px solid rgba(231, 234, 236, 1)",
+          borderRadius: "8px",
+        }}
+      >
+        <img src={require("./attachment-error.png")} alt="Crash Icon" style={{ width: "120px", height: "120px" }} />
+        <h3
+          style={{
+            fontFamily: "Gilroy",
+            fontWeight: 700,
+            fontSize: "20px",
+            lineHeight: "24px",
+          }}
+        >
+          Unable to Load Attachment
+        </h3>
+        <p
+          style={{
+            fontFamily: "Gilroy",
+            fontWeight: 500,
+            fontSize: "16px",
+            lineHeight: "20px",
+          }}
+        >
+          The attachment file could not be read.
+        </p>
       </div>
     );
   }
