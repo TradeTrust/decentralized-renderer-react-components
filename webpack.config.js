@@ -50,10 +50,6 @@ module.exports = {
         test: /\.css$/,
         use: { loader: "css-loader", options: { url: false } },
       },
-      {
-        test: /\.(png|jpg|jpeg|gif|svg)$/i,
-        type: "asset/resource",
-      },
     ],
   },
 };

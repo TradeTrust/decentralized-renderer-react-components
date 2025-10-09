@@ -26,7 +26,6 @@ const config = {
   },
   moduleNameMapper: {
     "\\.(css|sass|scss)$": "identity-obj-proxy",
-    "\\.(png|jpg|jpeg|gif|svg)$": "<rootDir>/_mocks_/fileMock.js",
     "node:stream": "<rootDir>/node_modules/stream-browserify",
     "node:util": "<rootDir>/node_modules/util",
     "node:events": "<rootDir>/node_modules/events",
