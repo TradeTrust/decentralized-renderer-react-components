@@ -2,9 +2,6 @@ import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { PdfRenderer } from "./PdfRenderer";
 
-// Mock the PNG image file to prevent Jest from trying to parse it
-jest.mock("./attachment-error.png", () => "mocked-image-path");
-
 // Mock react-pdf to simulate different scenarios
 jest.mock(
   "react-pdf",
